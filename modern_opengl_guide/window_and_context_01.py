@@ -28,7 +28,7 @@ def main(window):
         GL_STATIC_DRAW,
     )
 
-    vertexSource = r"""#version 330 core
+    vertexSource = r"""#version 150 core
     in vec2 position;
     void main()
     {
@@ -51,7 +51,7 @@ def main(window):
         print("Note: Cannot get the shader log to print")
         return 0
 
-    fragmentSource = r"""#version 330 core
+    fragmentSource = r"""#version 150 core
     out vec4 color;
     void main()
     {
