@@ -10,7 +10,12 @@ def key_event(window, key, scancode, action, mods):
 def main(window):
     glfw.set_key_callback(window, key_event)
 
-    vertices = [0.0, 0.5, 0.5, 0.0, 0.3, -0.5, -0.3, -0.5, -0.5, 0.0]
+    # vertices = [0.0, 0.5, 0.5, 0.0, 0.3, -0.5, -0.3, -0.5, -0.5, 0.0]
+    vertices = [
+        0.0, 0.5,
+        0.5, -0.5,
+        -0.5, -0.5,
+    ]
 
     number_of_buffers = 1
     gl_list = (GLint * number_of_buffers)()
@@ -33,20 +38,67 @@ def main(window):
 
     vertexShader = glCreateShader(GL_VERTEX_SHADER)
     glShaderSource(vertexShader, vertexSource, None)
-
     glCompileShader(vertexShader)
 
     status = ctypes.c_int(-1)
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, status)
 
-    print(f"Shader compile status is {status}")
+    print(f"Vertex shader compile status is {status}")
 
     if not status:
         print(f"Status is equal to {status == GL_TRUE}")
         print("Shader compilation failed")
+        print("Note: Cannot get the shader log to print")
         return 0
 
+    fragmentSource = r"""#version 330 core
+    out vec4 color;
+    void main()
+    {
+        color = vec4(1.0, 1.0, 1.0, 1.0);
+    }
+    """
+
+    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER)
+    glShaderSource(fragmentShader, fragmentSource, None)
+    glCompileShader(fragmentShader)
+
+    status = ctypes.c_int(-1)
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, status)
+
+    print(f"Fragment shader compile status is {status}")
+
+    if not status:
+        print(f"Status is equal to {status == GL_TRUE}")
+        print("Shader compilation failed")
+        print("Note: Cannot get the shader log to print")
+        return 0
+
+    shaderProgram = glCreateProgram()
+    glAttachShader(shaderProgram, vertexShader)
+    glAttachShader(shaderProgram, fragmentShader)
+    # Since a fragment shader is allowed to write to multiple buffers, you need to
+    # explicitly specify which output is written to which buffer. This needs to happen
+    # before linking the program. However, since this is 0 by default and there’s only
+    # one output right now, the following line of code is not necessary
+    # 
+    # glBindFragDataLocation(shaderProgram, 0, "outColor")
+
+    glLinkProgram(shaderProgram)
+    glUseProgram(shaderProgram)
+
+    vao = GLuint(0)
+    glGenVertexArrays(1, vao)
+    glBindVertexArray(vao)
+
+    posAttrib = glGetAttribLocation(shaderProgram, "position")
+    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 0, None)
+    glEnableVertexAttribArray(posAttrib)
+
+    print(f"There are {glGetError()} errors before running mainloop")
+
     while not glfw.window_should_close(window):
+        glDrawArrays(GL_TRIANGLES, 0, 3)
         glfw.swap_buffers(window)
         glfw.poll_events()
 
