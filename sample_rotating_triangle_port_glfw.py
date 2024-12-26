@@ -17,6 +17,7 @@ import OpenGL as _gl
 import OpenGL.GL as gl
 import OpenGL.GLU as glu
 import OpenGL.GLUT as glut
+import glfw
 
 
 angle = 0.0
@@ -64,39 +65,35 @@ def render():
 
     gl.glEnd()
 
-    glut.glutSwapBuffers()
-
     angle += speed
 
 
-def input_handler(key, x, y):
+# def input_handler(window, key, scancode, action, mods):
+def input_handler(window, key, *_):
     global speed, colors
     # print this out (for debug reasons)
-    print("Key pressed: %r (x: %r, y: %r)" % (key, x, y))
+    print("Key pressed: %r" % (key))
 
-    if key == b'\x1b':  # (ESCAPE) close the demo
-        sys.exit(0)
-
-    if key == b'+':  # increase rotation speed
+    if key == 256:  # (ESCAPE) close the demo
+        glfw.set_window_should_close(window, True)
+    if key == 61:  # increase rotation speed
         speed += 0.1
-    elif key == b'-':  # decrease rotation speed (going into negative values will reverse the rotation direction)
+    elif key == 45:  # decrease rotation speed (going into negative values will reverse the rotation direction)
         speed -= 0.1
-    elif key == b'*':  # rotate the colors array
+    elif key == 56:  # rotate the colors array
         colors = [*colors[1:], colors[0]]
 
 
 def main(argv):
-    glut.glutInit(argv)
-    glut.glutInitWindowPosition(100, 100)
-    glut.glutInitWindowSize(1000, 750)
-    glut.glutInitDisplayMode(glut.GLUT_RGBA | glut.GLUT_DOUBLE | glut.GLUT_DEPTH)
-    window = glut.glutCreateWindow("Python OpenGL Demo")
+    glfw.init()    
+    window = glfw.create_window(640, 480, "Hello World", None, None)
+    glfw.make_context_current(window)
+    glfw.set_key_callback(window, input_handler)
 
-    glut.glutDisplayFunc(render)
-    glut.glutReshapeFunc(change_size)
-    glut.glutIdleFunc(render)
-    glut.glutKeyboardFunc(input_handler)
-    glut.glutMainLoop()
+    while not glfw.window_should_close(window):
+        render()
+        glfw.swap_buffers(window)
+        glfw.poll_events()
     return 0
 
 

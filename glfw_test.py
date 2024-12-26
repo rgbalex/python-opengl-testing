@@ -11,6 +11,9 @@ def main():
         return
     # Create a windowed mode window and its OpenGL context
     window = glfw.create_window(640, 480, "Hello World", None, None)
+    print("Window ID: %r" % window)
+    glfw.window_hint(glfw.DECORATED, 1) # does not work on gnome desktop
+
     if not window:
         glfw.terminate()
         return
