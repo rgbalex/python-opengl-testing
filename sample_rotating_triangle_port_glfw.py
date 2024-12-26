@@ -24,7 +24,7 @@ colors = [(1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0), (1.0, 1.0, 0.0), (1
 
 
 
-def change_size(width, height):
+def change_size(window, width, height):
     if height == 0:
         height = 1
     ratio = float(width)/float(height)
@@ -93,7 +93,7 @@ def main():
     glfw.set_window_size_callback(window, change_size)
     
     # necessary to calculate camera viewport
-    change_size(640, 480)
+    change_size(window, 640, 480)
 
 
     while not glfw.window_should_close(window):
