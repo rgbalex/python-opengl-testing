@@ -106,17 +106,8 @@ def main(window):
 
     print(f"There are {glGetError()} errors before running mainloop")
 
-    uniColor = glGetUniformLocation(shaderProgram, "triangleColor")
-
-    glUniform3f(uniColor, 1.0, 0.0, 0.0)
 
     while not glfw.window_should_close(window):
-            
-        # make the red value oscillate between 0 and 1 depending on time
-        redValue = (1 + math.sin(glfw.get_time())) / 2 
-        greenValue = (1 + math.cos(glfw.get_time())) / 2
-        glUniform3f(uniColor, redValue, greenValue, 0.0)
-
         glDrawArrays(GL_TRIANGLES, 0, 3)
 
         glfw.swap_buffers(window)
