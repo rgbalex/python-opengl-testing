@@ -13,10 +13,8 @@ Controls:
 """
 import sys
 
-import OpenGL as _gl
 import OpenGL.GL as gl
 import OpenGL.GLU as glu
-import OpenGL.GLUT as glut
 import glfw
 
 
@@ -68,27 +66,35 @@ def render():
     angle += speed
 
 
-# def input_handler(window, key, scancode, action, mods):
-def input_handler(window, key, *_):
+def input_handler(window, key, scancode, action, mods):
     global speed, colors
     # print this out (for debug reasons)
     print("Key pressed: %r" % (key))
 
-    if key == 256:  # (ESCAPE) close the demo
+    if key == 256 and action == glfw.PRESS:  # (ESCAPE) close the demo
         glfw.set_window_should_close(window, True)
-    if key == 61:  # increase rotation speed
+    if key == 61 and action == glfw.PRESS:  # increase rotation speed
         speed += 0.1
-    elif key == 45:  # decrease rotation speed (going into negative values will reverse the rotation direction)
+    elif key == 45 and action == glfw.PRESS:  # decrease rotation speed (going into negative values will reverse the rotation direction)
         speed -= 0.1
-    elif key == 56:  # rotate the colors array
+    elif key == 56 and action == glfw.PRESS:  # rotate the colors array
         colors = [*colors[1:], colors[0]]
 
 
-def main(argv):
+def main():
     glfw.init()    
+    glfw.window_hint(glfw.RESIZABLE, glfw.TRUE)
+
     window = glfw.create_window(640, 480, "Hello World", None, None)
+    
     glfw.make_context_current(window)
+    
     glfw.set_key_callback(window, input_handler)
+    glfw.set_window_size_callback(window, change_size)
+    
+    # necessary to calculate camera viewport
+    change_size(640, 480)
+
 
     while not glfw.window_should_close(window):
         render()
@@ -98,4 +104,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv))
+    sys.exit(main())
