@@ -1,5 +1,6 @@
 import math
 import glfw
+import numpy as np
 from OpenGL.GL import *
 
 
@@ -12,11 +13,11 @@ def main(window):
     glfw.set_key_callback(window, key_event)
 
     # vertices = [0.0, 0.5, 0.5, 0.0, 0.3, -0.5, -0.3, -0.5, -0.5, 0.0]
-    vertices = [
-        0.0, 0.5, 1.0, 0.0, 0.0,
-        0.5, -0.5, 1.0, 0.0, 0.0,
-        -0.5, -0.5, 1.0, 0.0, 0.0,
-    ]
+    vertices = np.array([
+         0.0,  0.5, 1.0, 0.0, 0.0,
+         0.5, -0.5, 0.0, 1.0, 0.0,
+        -0.5, -0.5, 0.0, 0.0, 1.0,
+    ], dtype=np.float32)
 
     vao = GLuint(0)
     glGenVertexArrays(1, vao)
@@ -102,7 +103,7 @@ def main(window):
 
     colorAttrib = glGetAttribLocation(shaderProgram, "color")
     glEnableVertexAttribArray(colorAttrib)
-    glVertexAttribPointer(colorAttrib, 3, GL_FLOAT, GL_FALSE, 5*sizeof(ctypes.c_float), 2*sizeof(ctypes.c_float))
+    glVertexAttribPointer(index=colorAttrib, size=3, type=GL_FLOAT, normalized=GL_FALSE, stride=5*sizeof(ctypes.c_float), pointer=(ctypes.c_void_p(2*sizeof(ctypes.c_float))))
 
     print(f"There are {glGetError()} errors before running mainloop")
 
