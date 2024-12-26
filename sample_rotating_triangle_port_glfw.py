@@ -69,17 +69,19 @@ def render():
 def input_handler(window, key, scancode, action, mods):
     global speed, colors
     # print this out (for debug reasons)
-    print("Key pressed: %r" % (key))
-
-    if key == 256 and action == glfw.PRESS:  # (ESCAPE) close the demo
-        glfw.set_window_should_close(window, True)
-    if key == 61 and action == glfw.PRESS:  # increase rotation speed
-        speed += 0.1
-    elif key == 45 and action == glfw.PRESS:  # decrease rotation speed (going into negative values will reverse the rotation direction)
-        speed -= 0.1
-    elif key == 56 and action == glfw.PRESS:  # rotate the colors array
-        colors = [*colors[1:], colors[0]]
-
+    if action == glfw.PRESS:
+        print("Key pressed: %r" % (key))
+        match key:
+            case 256: # (ESCAPE) close the demo
+                glfw.set_window_should_close(window, True)
+            case 56:  # (*) rotate the colors array
+                colors = [*colors[1:], colors[0]]
+    else: # these actions can be repeated when key is held
+        match key:
+            case 61:  # (PLUS) increase rotation speed
+                speed += 0.1
+            case 45:  # (MINUS) decrease rotation speed (going into negative values will reverse the rotation direction)
+                speed -= 0.1
 
 def main():
     glfw.init()    
