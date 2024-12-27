@@ -101,7 +101,7 @@ def main(window):
     posAttrib = glGetAttribLocation(shaderProgram, "position")
     glEnableVertexAttribArray(posAttrib)
     glVertexAttribPointer(
-        posAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(ctypes.c_float), 0
+        posAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(ctypes.c_float), None
     )
 
     colorAttrib = glGetAttribLocation(shaderProgram, "color")
