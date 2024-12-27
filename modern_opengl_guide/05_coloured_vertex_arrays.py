@@ -22,6 +22,7 @@ void main()
 }
 """
 
+
 def key_event(window, key, scancode, action, mods):
     if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
         glfw.set_window_should_close(window, True)
@@ -58,7 +59,7 @@ def main(window):
     glGenBuffers(1, ebo)
 
     elements = np.array([0, 1, 2, 2, 3, 0], dtype=np.uint32)
-    
+
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo)
     glBufferData(
         GL_ELEMENT_ARRAY_BUFFER,
@@ -81,8 +82,6 @@ def main(window):
         print("Shader compilation failed")
         print("Note: Cannot get the shader log to print")
         return 0
-
-
 
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER)
     glShaderSource(fragmentShader, fragmentSource, None)
@@ -129,7 +128,7 @@ def main(window):
     while not glfw.window_should_close(window):
         glClearColor(0.0, 0.0, 0.0, 1.0)
         glClear(GL_COLOR_BUFFER_BIT)
-        
+
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, None)
         glfw.swap_buffers(window)
 
@@ -139,7 +138,7 @@ def main(window):
     glDeleteShader(fragmentShader)
     glDeleteShader(vertexShader)
 
-    glDeleteBuffers(1, ebo)    
+    glDeleteBuffers(1, ebo)
     glDeleteBuffers(1, vbo)
 
     glDeleteVertexArrays(1, vao)
