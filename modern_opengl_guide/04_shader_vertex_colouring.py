@@ -12,12 +12,13 @@ def key_event(window, key, scancode, action, mods):
 def main(window):
     glfw.set_key_callback(window, key_event)
 
-    # vertices = [0.0, 0.5, 0.5, 0.0, 0.3, -0.5, -0.3, -0.5, -0.5, 0.0]
+    # fmt: off
     vertices = np.array([
          0.0,  0.5, 1.0, 0.0, 0.0,
          0.5, -0.5, 0.0, 1.0, 0.0,
         -0.5, -0.5, 0.0, 0.0, 1.0,
     ], dtype=np.float32)
+    # fmt: on
 
     vao = GLuint(0)
     glGenVertexArrays(1, vao)
@@ -91,7 +92,7 @@ def main(window):
     # explicitly specify which output is written to which buffer. This needs to happen
     # before linking the program. However, since this is 0 by default and there’s only
     # one output right now, the following line of code is not necessary
-    # 
+    #
     # glBindFragDataLocation(shaderProgram, 0, "outColor")
 
     glLinkProgram(shaderProgram)
@@ -99,14 +100,22 @@ def main(window):
 
     posAttrib = glGetAttribLocation(shaderProgram, "position")
     glEnableVertexAttribArray(posAttrib)
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 5*sizeof(ctypes.c_float), 0)
+    glVertexAttribPointer(
+        posAttrib, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(ctypes.c_float), 0
+    )
 
     colorAttrib = glGetAttribLocation(shaderProgram, "color")
     glEnableVertexAttribArray(colorAttrib)
-    glVertexAttribPointer(index=colorAttrib, size=3, type=GL_FLOAT, normalized=GL_FALSE, stride=5*sizeof(ctypes.c_float), pointer=(ctypes.c_void_p(2*sizeof(ctypes.c_float))))
+    glVertexAttribPointer(
+        index=colorAttrib,
+        size=3,
+        type=GL_FLOAT,
+        normalized=GL_FALSE,
+        stride=5 * sizeof(ctypes.c_float),
+        pointer=(ctypes.c_void_p(2 * sizeof(ctypes.c_float))),
+    )
 
     print(f"There are {glGetError()} errors before running mainloop")
-
 
     while not glfw.window_should_close(window):
         glDrawArrays(GL_TRIANGLES, 0, 3)

@@ -11,12 +11,13 @@ def key_event(window, key, scancode, action, mods):
 def main(window):
     glfw.set_key_callback(window, key_event)
 
-    # vertices = [0.0, 0.5, 0.5, 0.0, 0.3, -0.5, -0.3, -0.5, -0.5, 0.0]
+    # fmt: off
     vertices = [
         0.0, 0.5,
         0.5, -0.5,
         -0.5, -0.5,
     ]
+    # fmt: on
 
     number_of_buffers = 1
     gl_list = (GLint * number_of_buffers)()
@@ -83,7 +84,7 @@ def main(window):
     # explicitly specify which output is written to which buffer. This needs to happen
     # before linking the program. However, since this is 0 by default and there’s only
     # one output right now, the following line of code is not necessary
-    # 
+    #
     # glBindFragDataLocation(shaderProgram, 0, "outColor")
 
     glLinkProgram(shaderProgram)
@@ -99,14 +100,14 @@ def main(window):
 
     print(f"There are {glGetError()} errors before running mainloop")
 
-    uniColor = glGetUniformLocation(shaderProgram, "triangleColor");
+    uniColor = glGetUniformLocation(shaderProgram, "triangleColor")
 
     glUniform3f(uniColor, 1.0, 0.0, 0.0)
 
     while not glfw.window_should_close(window):
-            
+
         # make the red value oscillate between 0 and 1 depending on time
-        redValue = (1 + math.sin(glfw.get_time())) / 2 
+        redValue = (1 + math.sin(glfw.get_time())) / 2
         greenValue = (1 + math.cos(glfw.get_time())) / 2
         glUniform3f(uniColor, redValue, greenValue, 0.0)
 

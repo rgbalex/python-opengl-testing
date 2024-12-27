@@ -10,12 +10,13 @@ def key_event(window, key, scancode, action, mods):
 def main(window):
     glfw.set_key_callback(window, key_event)
 
-    # vertices = [0.0, 0.5, 0.5, 0.0, 0.3, -0.5, -0.3, -0.5, -0.5, 0.0]
+    # fmt: off
     vertices = [
         0.0, 0.5,
         0.5, -0.5,
         -0.5, -0.5,
     ]
+    # fmt: on
 
     number_of_buffers = 1
     gl_list = (GLint * number_of_buffers)()
@@ -81,7 +82,7 @@ def main(window):
     # explicitly specify which output is written to which buffer. This needs to happen
     # before linking the program. However, since this is 0 by default and there’s only
     # one output right now, the following line of code is not necessary
-    # 
+    #
     # glBindFragDataLocation(shaderProgram, 0, "outColor")
 
     glLinkProgram(shaderProgram)
