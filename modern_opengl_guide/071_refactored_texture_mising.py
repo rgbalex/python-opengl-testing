@@ -3,38 +3,12 @@ import numpy as np
 from PIL import Image
 from OpenGL.GL import *
 
-vertexSource = r"""#version 150 core
-in vec3 color;
-in vec2 texcoord;
-in vec2 position;
+from helper_functions import *
 
-out vec3 Color;
-out vec2 Texcoord;
+vertexSource = loadShader("./modern_opengl_guide/resources/vertex.glsl")
 
-void main()
-{
-    Color = color;
-    Texcoord = texcoord;
-    gl_Position = vec4(position, 0.0, 1.0);
-}
-"""
+fragmentSource = loadShader("./modern_opengl_guide/resources/fragment.glsl")
 
-fragmentSource = r"""#version 150 core
-in vec3 Color;
-in vec2 Texcoord;
-
-out vec4 outColor;
-
-uniform sampler2D tex;
-uniform sampler2D tex2;
-
-void main()
-{
-    vec4 colTex = texture(tex, Texcoord);
-    vec4 colTex2 = texture(tex2, Texcoord);
-    outColor = mix(colTex, colTex2, 0.5) * vec4(Color, 1.0);
-}
-"""
 
 def key_event(window, key, scancode, action, mods):
     if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
@@ -82,35 +56,12 @@ def main(window):
         GL_STATIC_DRAW,
     )
 
-    vertexShader = glCreateShader(GL_VERTEX_SHADER)
-    glShaderSource(vertexShader, vertexSource, None)
-    glCompileShader(vertexShader)
-
-    status = ctypes.c_int(-1)
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, status)
-
-    print(f"Vertex shader compile status is {status}")
-
-    if not status:
-        print(f"Status is equal to {status == GL_TRUE}")
-        print("Shader compilation failed")
-        print("Note: Cannot get the shader log to print")
-        return 0
-
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER)
-    glShaderSource(fragmentShader, fragmentSource, None)
-    glCompileShader(fragmentShader)
-
-    status = ctypes.c_int(-1)
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, status)
-
-    print(f"Fragment shader compile status is {status}")
-
-    if not status:
-        print(f"Status is equal to {status == GL_TRUE}")
-        print("Shader compilation failed")
-        print("Note: Cannot get the shader log to print")
-        return 0
+    vertexShader = setup_shader(
+        "modern_opengl_guide/resources/vertex.glsl", GL_VERTEX_SHADER
+    )
+    fragmentShader = setup_shader(
+        "modern_opengl_guide/resources/fragment.glsl", GL_FRAGMENT_SHADER
+    )
 
     shaderProgram = glCreateProgram()
     glAttachShader(shaderProgram, vertexShader)
@@ -236,5 +187,5 @@ def main(window):
 
 
 if __name__ == "__main__":
-    
+
     main(setup())

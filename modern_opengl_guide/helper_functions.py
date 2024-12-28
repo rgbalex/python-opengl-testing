@@ -1,4 +1,7 @@
 import glfw
+import ctypes
+from OpenGL.GL import *
+
 
 def setup():
     glfw.init()
@@ -13,3 +16,21 @@ def setup():
     window = glfw.create_window(640, 480, "OpenGL Tutorials", None, None)
     glfw.make_context_current(window)
     return window
+
+
+def loadShader(filename):
+    with open(filename, "r") as file:
+        return file.read()
+
+
+def setup_shader(filename, shader_type):
+    shader = glCreateShader(shader_type)
+    glShaderSource(shader, loadShader(filename), None)
+    glCompileShader(shader)
+    status = ctypes.c_int(-1)
+    glGetShaderiv(shader, GL_COMPILE_STATUS, status)
+
+    if not status:
+        raise Exception(f"{shader_type} compilation failed")
+
+    return shader
