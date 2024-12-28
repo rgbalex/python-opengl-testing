@@ -149,14 +149,18 @@ def main(window):
         pointer=(ctypes.c_void_p(5 * sizeof(ctypes.c_float))),
     )
 
-    textures = (GLuint * 2)()    
+    textures = (GLuint * 2)()
     glGenTextures(2, textures)
 
     glActiveTexture(GL_TEXTURE0)
     glBindTexture(GL_TEXTURE_2D, textures[0])
 
     # Load texture
-    image = Image.open("./modern_opengl_guide/resources/red_brick_diff_1k.jpg").convert("RGB").transpose(Image.FLIP_TOP_BOTTOM)
+    image = (
+        Image.open("./modern_opengl_guide/resources/red_brick_diff_1k.jpg")
+        .convert("RGB")
+        .transpose(Image.FLIP_TOP_BOTTOM)
+    )
     img_data = np.array(image.getdata(), np.uint8).flatten().tobytes()
 
     glTexImage2D(
@@ -171,7 +175,7 @@ def main(window):
         img_data,
     )
 
-    glUniform1i(glGetUniformLocation(shaderProgram, "tex1"), 0);
+    glUniform1i(glGetUniformLocation(shaderProgram, "tex1"), 0)
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
@@ -182,7 +186,11 @@ def main(window):
     glBindTexture(GL_TEXTURE_2D, textures[1])
 
     # Load texture
-    image2 = Image.open("./modern_opengl_guide/resources/red_brick_diff_1k_rotated.jpg").convert("RGB").transpose(Image.FLIP_TOP_BOTTOM)
+    image2 = (
+        Image.open("./modern_opengl_guide/resources/red_brick_diff_1k_rotated.jpg")
+        .convert("RGB")
+        .transpose(Image.FLIP_TOP_BOTTOM)
+    )
     img_data2 = np.array(image2.getdata(), np.uint8).flatten().tobytes()
 
     glTexImage2D(
