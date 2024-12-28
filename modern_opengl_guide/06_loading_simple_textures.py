@@ -160,10 +160,7 @@ def main(window):
     image = Image.open("./modern_opengl_guide/resources/red_brick_diff_1k.jpg")
     image = image.convert("RGB")
     image = image.transpose(Image.FLIP_TOP_BOTTOM)
-    img_data = list(image.getdata())
-    # remove all tuples from list of tuples
-    img_data = [x for t in img_data for x in t]
-    # note this is necessary to flatten
+    img_data = np.array(image.getdata(), np.uint8).flatten().tobytes()
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width, image.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img_data)
 
