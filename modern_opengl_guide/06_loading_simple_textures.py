@@ -81,7 +81,7 @@ def main(window):
     )
 
     vertexShader = glCreateShader(GL_VERTEX_SHADER)
-    glShaderSource(vertexShader, vertexSource, None) 
+    glShaderSource(vertexShader, vertexSource, None)
     glCompileShader(vertexShader)
 
     status = ctypes.c_int(-1)
@@ -162,9 +162,17 @@ def main(window):
     image = image.transpose(Image.FLIP_TOP_BOTTOM)
     img_data = np.array(image.getdata(), np.uint8).flatten().tobytes()
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.width, image.height, 0, GL_RGB, GL_UNSIGNED_BYTE, img_data)
-
-
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGB,
+        image.width,
+        image.height,
+        0,
+        GL_RGB,
+        GL_UNSIGNED_BYTE,
+        img_data,
+    )
 
     print(f"There are {glGetError()} errors before running mainloop")
 
