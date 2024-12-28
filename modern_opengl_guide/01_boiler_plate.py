@@ -32,7 +32,7 @@ if __name__ == "__main__":
     glfw.window_hint(glfw.SAMPLES, 4)
     glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
 
-    window = glfw.create_window(640, 480, "Rope Simulation", None, None)
+    window = glfw.create_window(640, 480, "OpenGL Tutorials", None, None)
 
     glfw.make_context_current(window)
 

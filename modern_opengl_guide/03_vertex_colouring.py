@@ -134,7 +134,7 @@ if __name__ == "__main__":
         lambda error, description: print(f"Error: {error}, Description: {description}")
     )
 
-    window = glfw.create_window(640, 480, "Rope Simulation", None, None)
+    window = glfw.create_window(640, 480, "OpenGL Tutorials", None, None)
 
     glfw.make_context_current(window)
 

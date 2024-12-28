@@ -35,7 +35,7 @@ if __name__ == "__main__":
     glfw.init()
     glfw.window_hint(glfw.RESIZABLE, glfw.TRUE)
 
-    window = glfw.create_window(640, 480, "Rope Simulation", None, None)
+    window = glfw.create_window(640, 480, "OpenGL Tutorials", None, None)
 
     glfw.make_context_current(window)
 

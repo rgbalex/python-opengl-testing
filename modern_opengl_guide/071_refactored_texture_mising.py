@@ -26,13 +26,15 @@ in vec2 Texcoord;
 out vec4 outColor;
 
 uniform sampler2D tex;
+uniform sampler2D tex2;
 
 void main()
 {
-    outColor = texture(tex, Texcoord) * vec4(Color, 1.0);
+    vec4 colTex = texture(tex, Texcoord);
+    vec4 colTex2 = texture(tex2, Texcoord);
+    outColor = mix(colTex, colTex2, 0.5) * vec4(Color, 1.0);
 }
 """
-
 
 def key_event(window, key, scancode, action, mods):
     if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
@@ -51,11 +53,11 @@ def main(window):
 
     # fmt: off
     vertices = np.array([
-    # Position       Color     Texcoords
-    -0.5,  0.5, 1.0, 0.0, 0.0, 0.0, 0.0, # Top-left
-     0.5,  0.5, 0.0, 1.0, 0.0, 1.0, 0.0, # Top-right
-     0.5, -0.5, 0.0, 0.0, 1.0, 1.0, 1.0, # Bottom-right
-    -0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 1.0  # Bottom-left
+        # Position       Color     Texcoords
+        -0.5,  0.5, 1.0, 0.0, 0.0, 0.0, 0.0, # Top-left
+         0.5,  0.5, 0.0, 1.0, 0.0, 1.0, 0.0, # Top-right
+         0.5, -0.5, 0.0, 0.0, 1.0, 1.0, 1.0, # Bottom-right
+        -0.5, -0.5, 1.0, 1.0, 1.0, 0.0, 1.0  # Bottom-left
     ], dtype=np.float32)
     # fmt: on
 
@@ -146,20 +148,18 @@ def main(window):
         pointer=(ctypes.c_void_p(5 * sizeof(ctypes.c_float))),
     )
 
-    texture = GLuint(-1)
-    glGenTextures(1, texture)
-    glBindTexture(GL_TEXTURE_2D, texture)
-    # Set our texture parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
-    # Set texture filtering
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+    textures = (GLuint * 2)()
+    glGenTextures(2, textures)
+
+    glActiveTexture(GL_TEXTURE0)
+    glBindTexture(GL_TEXTURE_2D, textures[0])
 
     # Load texture
-    image = Image.open("./modern_opengl_guide/resources/red_brick_diff_1k.jpg")
-    image = image.convert("RGB")
-    image = image.transpose(Image.FLIP_TOP_BOTTOM)
+    image = (
+        Image.open("./modern_opengl_guide/resources/red_brick_diff_1k.jpg")
+        .convert("RGB")
+        .transpose(Image.FLIP_TOP_BOTTOM)
+    )
     img_data = np.array(image.getdata(), np.uint8).flatten().tobytes()
 
     glTexImage2D(
@@ -173,6 +173,43 @@ def main(window):
         GL_UNSIGNED_BYTE,
         img_data,
     )
+
+    glUniform1i(glGetUniformLocation(shaderProgram, "tex1"), 0)
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+
+    glActiveTexture(GL_TEXTURE1)
+    glBindTexture(GL_TEXTURE_2D, textures[1])
+
+    # Load texture
+    image2 = (
+        Image.open("./modern_opengl_guide/resources/red_brick_diff_1k_rotated.jpg")
+        .convert("RGB")
+        .transpose(Image.FLIP_TOP_BOTTOM)
+    )
+    img_data2 = np.array(image2.getdata(), np.uint8).flatten().tobytes()
+
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGB,
+        image.width,
+        image.height,
+        0,
+        GL_RGB,
+        GL_UNSIGNED_BYTE,
+        img_data2,
+    )
+
+    glUniform1i(glGetUniformLocation(shaderProgram, "tex2"), 1)
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 
     print(f"There are {glGetError()} errors before running mainloop")
 
@@ -199,21 +236,5 @@ def main(window):
 
 
 if __name__ == "__main__":
-    glfw.init()
-    glfw.window_hint(glfw.RESIZABLE, glfw.TRUE)
-    glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
-    glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 2)
-    glfw.window_hint(glfw.DEPTH_BITS, 24)
-    glfw.window_hint(glfw.STENCIL_BITS, 2)
-    glfw.window_hint(glfw.SAMPLES, 4)
-    glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
-
-    glfw.set_error_callback(
-        lambda error, description: print(f"Error: {error}, Description: {description}")
-    )
-
-    window = glfw.create_window(640, 480, "OpenGL Tutorials", None, None)
-
-    glfw.make_context_current(window)
-
-    main(window)
+    
+    main(setup())
